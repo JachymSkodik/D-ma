@@ -106,11 +106,7 @@ class Board:
         
         #projíždíme možné tahy z movesetAccumulator
         for moveInfo in possibleMoves:
-            
-            #když je isMovePossible False, tak se rovná isMovePossibleInMoveInfo a spustí se filtr
-            if(not isMovePossible):
-                isMovePossible = isMovePossibleInMoveInfo
-                
+
             #filtr možných tahů, když se označí figurka a vybere se tah, který nemůže provést, vrátí False
             #když nové políčko vybrané pro tah odpovídá omezením stanoveným pro figurku, vrátí True
             #proto se tah porovnává se stanovným pohybem figurky (moveBasedOnColor ve fig)
@@ -122,6 +118,10 @@ class Board:
             #k movesetAccumulator se appenduje None
             if(isMovePossibleInMoveInfo):
                 skippedFigure = moveInfo.skippedFigure
+
+            # když je isMovePossible False, tak se rovná isMovePossibleInMoveInfo a spustí se filtr
+            if (not isMovePossible):
+                isMovePossible = isMovePossibleInMoveInfo
 
         #když filtr z for cyklu vrátí hodnotu False, tak tah není možný
         if(not isMovePossible):
