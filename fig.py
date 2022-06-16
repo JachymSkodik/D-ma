@@ -2,150 +2,151 @@ import tkinter
 from enums import Color
 
 class Fig:
-    def __init__ (self, positionX, positionY, color):
-        self.positionX = positionX
-        self.positionY = positionY
+    def __init__ (self, position_x, position_y, color):
+        self.position_x = position_x
+        self.position_y = position_y
         self.color = color
         
     #vykreslení figurky    
-    def draw(self,width,height,canvas):
-        self.drawWithOffset(width,height,canvas)
+    def draw(self, width, height, canvas):
+        self.draw_with_offset(width, height, canvas)
         
     #vykreslení figurky tak, aby se nedotýkala hran políčka
-    def drawWithOffset(self,width,height,canvas, offsetY=0): 
-        rWidth = width/2
-        rHeight = height/2
-        x0 = (width*(self.positionX+1)) - (rWidth - rWidth*0.4 ) - (width/2) #rWidth je polovina délky hrany políčka, figurka má průměr 0,6 hrany políčka, je tedy od hrany vzdálená 0,4 rWidth
-        y0 = (height*(self.positionY+1)) - (rHeight - rHeight*0.4) - (height/2) - offsetY 
-        x1 = (width*(self.positionX+1)) + (rWidth - rWidth*0.4 ) - (width/2)
-        y1 = (height*(self.positionY+1)) + (rHeight - rHeight*0.4) - (height/2) - offsetY 
+    def draw_with_offset(self, width, height, canvas, offset_y=0): 
+        r_width = width/2
+        r_height = height/2
+        x0 = (width*(self.position_x+1)) - (r_width - r_width*0.4 ) - (width/2) #rWidth je polovina délky hrany políčka, figurka má průměr 0,6 hrany políčka, je tedy od hrany vzdálená 0,4 rWidth
+        y0 = (height*(self.position_y+1)) - (r_height - r_height*0.4) - (height/2) - offset_y 
+        x1 = (width*(self.position_x+1)) + (r_width - r_width*0.4 ) - (width/2)
+        y1 = (height*(self.position_y+1)) + (r_height - r_height*0.4) - (height/2) - offset_y 
         
-        fillColor = 'white'
-        outlineColor = 'black'
+        fill_color = 'white'
+        outline_color = 'black'
         if(self.color == Color.BLACK):
-            fillColor = 'black'
-            outlineColor = 'white'
+            fill_color = 'black'
+            outline_color = 'white'
         
-        canvas.create_oval(x0, y0, x1, y1, fill = fillColor, outline = outlineColor) 
+        canvas.create_oval(x0, y0, x1, y1, fill = fill_color, outline = outline_color) 
 
-    def possibleMoves(self):
-        possiblePositions =[(self.positionX - 1, self.moveBasedOnColor()), (self.positionX + 1, self.moveBasedOnColor())]
+    def possible_moves(self):
+        possible_positions =[(self.position_x - 1, self.move_based_on_color()), (self.position_x + 1, self.move_based_on_color())]
 
         # tady odfiltrujeme možné pohyby, které by přesahovoly naší šachovnici 
-        return list(filter(self.arePositionsWithinBounds, possiblePositions))
+        return list(filter(self.are_positions_within_bounds, possible_positions))
     
     #kontrolujeme, aby figurka nevyskočila mimo pole
     @staticmethod
-    def isWithinBounds(position):
+    def is_within_bounds(position):
         return position >= 0 and position < 8
     
-    #musíme funkci isWithinBounds použít i na novou pozici figurky
+    #musíme funkci is_within_bounds použít i na novou pozici figurky
     @staticmethod
-    def arePositionsWithinBounds(positions):
-        return Fig.isWithinBounds(positions[0]) and Fig.isWithinBounds(positions[1])
+    def are_positions_within_bounds(positions):
+        return Fig.is_within_bounds(positions[0]) and Fig.is_within_bounds(positions[1])
     
     #omezuje pohyb figurek jedné barvy
-    def moveBasedOnColor(self):
+    def move_based_on_color(self):
         if(self.color == Color.BLACK):
-            return self.moveUp()
+            return self.move_up()
         else:
-            return self.moveDown()
+            return self.move_down()
 
-    def moveUp(self):
-        return self.positionY - 1 
+    def move_up(self):
+        return self.position_y - 1 
 
-    def moveDown(self):
-        return self.positionY + 1 
+    def move_down(self):
+        return self.position_y + 1 
 
     #přiřazení písmen ke sloupcům (šachová notace)
-    def toString(self):
-        boardAlphabet = "ABCDEFGH"
+    def to_string(self):
+        board_alphabet = "ABCDEFGH"
 
-        return f"{self.positionX + 1}{boardAlphabet[self.positionY]}"
+        return f"{self.position_x + 1}{board_alphabet[self.position_y]}"
     
     #vrátí novou pozici figurky
-    def copyFig(self):
-        return Fig(self.positionX, self.positionY, self.color)
+    def copy_fig(self):
+        return Fig(self.position_x, self.position_y, self.color)
 
 
 class SkippingFig(Fig):
-    def __init__(self, positionX, positionY, color):
-        super(SkippingFig, self).__init__(positionX, positionY, color)
+    def __init__(self, position_x, position_y, color):
+        super(SkippingFig, self).__init__(position_x, position_y, color)
     
     #figurka skáče přes dvě pole
-    def moveUp(self):
-        return self.positionY - 2 
+    def move_up(self):
+        return self.position_y - 2 
 
-    def moveDown(self):
-        return self.positionY + 2 
+    def move_down(self):
+        return self.position_y + 2 
 
     #vrátí novou pozici figurky po skoku
     @staticmethod
-    def fromFig(fig):
-        return SkippingFig(fig.positionX, fig.positionY, fig.color)
+    def from_fig(fig):
+        return SkippingFig(fig.position_x, fig.position_y, fig.color)
 
 
 class Queen(Fig):
 
-    def __init__ (self, positionX, positionY, color):
-        super(Queen, self).__init__(positionX, positionY, color)
+    def __init__ (self, position_x, position_y, color):
+        super(Queen, self).__init__(position_x, position_y, color)
 
 
-    def possibleMoves(self):
-        possiblePositions = []
+    def possible_moves(self):
+        possible_positions = []
 
         #pohyb doprava dolu
-        positionX = self.positionX
-        positionY = self.positionY
-        if Fig.arePositionsWithinBounds((positionX, positionY)):
-            positionX += 1
-            positionY += 1
-            possiblePositions.append((positionX, positionY))
+        position_x = self.position_x
+        position_y = self.position_y
+        if Fig.are_positions_within_bounds((position_x, position_y)):
+            position_x += 1
+            position_y += 1
+            possible_positions.append((position_x, position_y))
 
         #pohyb doleva nahoru
-        positionX = self.positionX
-        positionY = self.positionY
-        if Fig.arePositionsWithinBounds((positionX, positionY)):
-            positionX -= 1
-            positionY -= 1
-            possiblePositions.append((positionX, positionY))
+        position_x = self.position_x
+        position_y = self.position_y
+        if Fig.are_positions_within_bounds((position_x, position_y)):
+            position_x -= 1
+            position_y -= 1
+            possible_positions.append((position_x, position_y))
 
         #pohyb doprava nahoru
-        positionX = self.positionX
-        positionY = self.positionY
-        if Fig.arePositionsWithinBounds((positionX, positionY)):
-            positionX += 1
-            positionY -= 1
-            possiblePositions.append((positionX, positionY))
+        position_x = self.position_x
+        position_y = self.position_y
+        if Fig.are_positions_within_bounds((position_x, position_y)):
+            position_x += 1
+            position_y -= 1
+            possible_positions.append((position_x, position_y))
 
         #pohyb doleva dolu
-        positionX = self.positionX
-        positionY = self.positionY
-        if Fig.arePositionsWithinBounds((positionX, positionY)):
-            positionX -= 1
-            positionY += 1
-            possiblePositions.append((positionX, positionY))
+        position_x = self.position_x
+        position_y = self.position_y
+        if Fig.are_positions_within_bounds((position_x, position_y)):
+            position_x -= 1
+            position_y += 1
+            possible_positions.append((position_x, position_y))
 
         # tady odfiltrujeme možné pohyby, které by přesahovoly naší šachovnici 
-        return possiblePositions 
+        return possible_positions 
     
     #skákání dámou (ještě není dodělané)
-    def moveUp(self):
-        return self.positionY - 2, SkippingFig(fig.positionX, fig.positionY, fig.color) 
+    def move_up(self):
+        return self.position_y - 2, SkippingFig(fig.position_x, fig.position_y, fig.color) 
 
-    def moveDown(self):
-        return self.positionY + 2, SkippingFig(fig.positionX, fig.positionY, fig.color)
+    def move_down(self):
+        return self.position_y + 2, SkippingFig(fig.position_x, fig.position_y, fig.color)
     
     #vykreslení dámy (dvě figurky na sobě)
-    def draw(self,width,height,canvas):
-        super(Queen, self).draw(width,height, canvas)
-        super(Queen, self).drawWithOffset(width,height, canvas, 10) #minus offsetY: druhá vykreslená figurka je posunutá o 10 pixelů nahoru
+    def draw(self, width, height, canvas):
+        super(Queen, self).draw(width, height, canvas)
+        super(Queen, self).draw_with_offset(width, height, canvas, 10) #minus offset_y: druhá vykreslená figurka je posunutá o 10 pixelů nahoru
 
     #vrátí novou pozici dámy
-    def copyFig(self):
-        return Queen(self.positionX, self.positionY, self.color)
+    def copy_fig(self):
+        return Queen(self.position_x, self.position_y, self.color)
 
     #změna na dámu
     @staticmethod
-    def queenFromFig(fig):
-        return Queen(fig.positionX, fig.positionY, fig.color)
+    def queen_from_fig(fig):
+        return Queen(fig.position_x, fig.position_y, fig.color)
+    
