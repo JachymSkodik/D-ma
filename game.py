@@ -63,13 +63,13 @@ class Game:
         else:
             # Ze začátku uložíme figurku a pak ji posuneme
             if (fig.color == self.active_player):
-                self.movePlanner.saveFigure(fig)
+                self.movePlanner.save_figure(fig)
 
         # přerendrování po kliknutí
         self.draw()
 
     def move_figure(self, x, y):
-        if self.movePlanner.moveSavedFigureSuccessful(self.board, x, y, self.file_writer):
+        if self.movePlanner.move_saved_figure_successful(self.board, x, y, self.file_writer):
             self.toggle_players()  # po úspěšném tahu je na řadě druhá barva a zapsán tah do csv
 
     # je potřeba dodělat možnost více tahů po sobě
