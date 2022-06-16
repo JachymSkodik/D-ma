@@ -58,7 +58,7 @@ class Board:
         moveset_accumulator = []
 
         # Byla tu primární snaha, neporovnávat všechno v závislosti na barvě
-        for [posX, posY] in figure_move_set:
+        for [pos_x, pos_y] in figure_move_set:
             # pokud políčko nemá figurku, tak daná figurka se může na to pole pohnout
             if (not self.has_square_figure(pos_x, pos_y)):
                 move_info = MoveInfo(Fig(pos_x, pos_y, fig.color))
