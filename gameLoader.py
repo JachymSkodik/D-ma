@@ -1,63 +1,63 @@
 from board import Board
 from enums import Color
 from fig import Fig
-#opravit mezery/tabulátory
+
 class GameLoader: #funkce pro načtení hry z csv souboru
-	@staticmethod #funkce není vázaná objektem
-	def parseInputLine(fileReader):
-		line = fileReader.readline() #do proměnné line se uloží string z řádku z csv
+    @staticmethod #funkce není vázaná objektem
+    def parse_input_line(file_reader):
+        line = file_reader.readline() #do proměnné line se uloží string z řádku z csv
 
-		if len(line) == 0: return None #když je řádek prázdný, vrátí None
+	if len(line) == 0: return None #když je řádek prázdný, vrátí None
 
-		fromPosChar, toPosChar, color = line.split(',') #rozdělí proměnnou line na prvky seznamu
+	from_pos_char, to_pos_char, color = line.split(',') #rozdělí proměnnou line na prvky seznamu
 
-		# Fig.py metoda toString, proto je zde - 1
-		# odečte z první souřadnice jedničku, protože hra indexuje od 0, ale zápis je od indexu 1
-		#a převede písmeno na číslo v souřadnici
-		fromPos = (int(fromPosChar[0]) - 1, GameLoader.alphabetToNum(fromPosChar[1]))
-		toPos = (int(toPosChar[0]) - 1, GameLoader.alphabetToNum(toPosChar[1]))
-		colorEnum = None #vymaže se obsah proměnné
+	# Fig.py metoda toString, proto je zde - 1
+	# odečte z první souřadnice jedničku, protože hra indexuje od 0, ale zápis je od indexu 1
+	#a převede písmeno na číslo v souřadnici
+	from_pos = (int(from_pos_char[0]) - 1, GameLoader.alphabet_to_num(from_pos_char[1]))
+	to_pos = (int(to_pos_char[0]) - 1, GameLoader.alphabet_to_num(to_pos_char[1]))
+	color_enum = None #vymaže se obsah proměnné
 
-		if color == "Black\n" : #zjišťuje, jakou barvu má mít nasazená figurka
-			colorEnum = Color.BLACK
-		elif color == "White\n":
-			colorEnum = Color.WHITE
-		else:
-			raise Exception("Csv file is in incorrect format") #když je zápis barvy špatně, vyhodí se exception
+	if color == "Black\n" : #zjišťuje, jakou barvu má mít nasazená figurka
+            color_enum = Color.BLACK
+	elif color == "White\n":
+	    color_enum = Color.WHITE
+	else:
+	    raise Exception("Csv file is in incorrect format") #když je zápis barvy špatně, vyhodí se exception
 		
-		return (fromPos, toPos, colorEnum) #vrátí souřadnice a barvu ve formátu pro hru
+	return (from_pos, to_pos, color_enum) #vrátí souřadnice a barvu ve formátu pro hru
 
-	@staticmethod
-	def playGame(fileReader):
-		parsedLine = GameLoader.parseInputLine(fileReader) #souřadnice a barvy se uloží do proměnné
-		board = Board() #po načtení se musí vytvořit nové hrací pole
+    @staticmethod
+    def play_game(file_reader):
+	parsed_line = GameLoader.parse_input_line(file_reader) #souřadnice a barvy se uloží do proměnné
+	board = Board() #po načtení se musí vytvořit nové hrací pole
 
-		lastPlayer = Color.BLACK #při nové hře začíná černý
-		# kontrola správného zápisu
-		# pokud jsou v zápisu dvě figurky na stejném políčku, hra se nenačte, vyvolá se výjimka
-		while parsedLine:
-			fromPos, toPos, colorEnum = parsedLine
-			if not board.is_move_figure_on_board_success(fromPos[0], fromPos[1], Fig(toPos[0], toPos[1], colorEnum)):
-				raise Exception("Can't load corrupted game")
-			# když je zápis správně, vrátí souřadnice, barvy figurek a posledního hráče na tahu
-			parsedLine = GameLoader.parseInputLine(fileReader)
-			lastPlayer = colorEnum
+	last_player = Color.BLACK #při nové hře začíná černý
+	# kontrola správného zápisu
+	# pokud jsou v zápisu dvě figurky na stejném políčku, hra se nenačte, vyvolá se výjimka
+	while parsed_line:
+	    from_pos, to_pos, color_enum = parsed_line
+	    if not board.is_move_figure_on_board_success(from_pos[0], from_pos[1], Fig(to_pos[0], to_pos[1], color_enum)):
+	        raise Exception("Can't load corrupted game")
+		# když je zápis správně, vrátí souřadnice, barvy figurek a posledního hráče na tahu
+	    parsed_line = GameLoader.parse_input_line(file_reader)
+	    last_player = color_enum
 
-		return (board, lastPlayer)
+        return (board, last_player)
 
 		
-	# převede písmena z csv zápisu zpátky na čísla
-	@staticmethod
-	def alphabetToNum(charInput): #písmena odshora dolů, čísla zleva doprava
-		alphabetDictionary = {
-			'A': 0,
-			'B': 1,
-			'C': 2,
-			'D': 3,
-			'E': 4,
-			'F': 5,
-			'G': 6,
-			'H': 7
+    # převede písmena z csv zápisu zpátky na čísla
+    @staticmethod
+    def alphabet_to_num(char_input): #písmena odshora dolů, čísla zleva doprava
+	alphabet_dictionary = {
+	    'A': 0,
+	    'B': 1,
+	    'C': 2,
+	    'D': 3,
+	    'E': 4,
+	    'F': 5,
+	    'G': 6,
+	    'H': 7
 		}
 
-		return alphabetDictionary[charInput]
+        return alphabet_dictionary[char_input] #vrátí index písmena, které se objevilo v zápisu
