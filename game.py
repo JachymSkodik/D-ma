@@ -25,11 +25,11 @@ class Game:
         else:
             self.board = board
 
-        self.movePlanner = MovePlanner()
-        self.shouldQuit = False #výchozí stav - okno se nezavře
+        self.move_planner = MovePlanner()
+        self.should_quit = False #výchozí stav - okno se nezavře
 
     def close(self):
-        self.shouldQuit = True
+        self.should_quit = True
         self.root.destroy()  # odstraní widgety a ukončí běh kódu
         self.file_writer.close() #ukončí se zapisovač do souboru
 
@@ -38,7 +38,7 @@ class Game:
         self.add_events()
         self.draw()
         # je zde potřeba, aby se okno hned nezavřelo
-        while not self.shouldQuit:
+        while not self.should_quit:
             self.root.update()
 
     def handle_click(self, ev):
@@ -63,13 +63,13 @@ class Game:
         else:
             # Ze začátku uložíme figurku a pak ji posuneme
             if (fig.color == self.active_player):
-                self.movePlanner.save_figure(fig)
+                self.move_planner.save_figure(fig)
 
         # přerendrování po kliknutí
         self.draw()
 
     def move_figure(self, x, y):
-        if self.movePlanner.move_saved_figure_successful(self.board, x, y, self.file_writer):
+        if self.move_planner.move_saved_figure_successful(self.board, x, y, self.file_writer):
             self.toggle_players()  # po úspěšném tahu je na řadě druhá barva a zapsán tah do csv
 
     # je potřeba dodělat možnost více tahů po sobě
@@ -100,7 +100,7 @@ class Game:
 
     def draw(self):
         self.board.draw(self.width, self.height, self.canvas)  # vykreslení grafiky hracího pole
-        self.movePlanner.draw(self.board, self.width / 8, self.height / 8, self.canvas)  # vykreslení nabídky tahů
+        self.move_planner.draw(self.board, self.width / 8, self.height / 8, self.canvas)  # vykreslení nabídky tahů
 
         winner_text = self.check_winner()
 
