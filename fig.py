@@ -97,7 +97,7 @@ class Queen(Fig):
         #pohyb doprava dolu
         position_x = self.position_x
         position_y = self.position_y
-        if Fig.are_positions_within_bounds((position_x, position_y)):
+        while Fig.are_positions_within_bounds((position_x, position_y)):
             position_x += 1
             position_y += 1
             possible_positions.append((position_x, position_y))
@@ -105,7 +105,7 @@ class Queen(Fig):
         #pohyb doleva nahoru
         position_x = self.position_x
         position_y = self.position_y
-        if Fig.are_positions_within_bounds((position_x, position_y)):
+        while Fig.are_positions_within_bounds((position_x, position_y)):
             position_x -= 1
             position_y -= 1
             possible_positions.append((position_x, position_y))
@@ -113,7 +113,7 @@ class Queen(Fig):
         #pohyb doprava nahoru
         position_x = self.position_x
         position_y = self.position_y
-        if Fig.are_positions_within_bounds((position_x, position_y)):
+        while Fig.are_positions_within_bounds((position_x, position_y)):
             position_x += 1
             position_y -= 1
             possible_positions.append((position_x, position_y))
@@ -121,7 +121,7 @@ class Queen(Fig):
         #pohyb doleva dolu
         position_x = self.position_x
         position_y = self.position_y
-        if Fig.are_positions_within_bounds((position_x, position_y)):
+        while Fig.are_positions_within_bounds((position_x, position_y)):
             position_x -= 1
             position_y += 1
             possible_positions.append((position_x, position_y))
