@@ -25,10 +25,10 @@ def loadBoardFromCsv(game):
 	savedFile.close()
 
 	game.board = gameBoardState #vytvoří board dle csv
-	game.activePlayer = lastPlayer #nastaví posledního hráče z csv
+	game.active_player = lastPlayer #nastaví posledního hráče z csv
 
 	# načtením získáme posledního hráče co hrál, ale na tahu má být ten druhý
-	game.togglePlayers()
+	game.toggle_players()
 
 	# po načtení souboru se musí automaticky přerendrovat pole
 	game.draw()
@@ -36,23 +36,23 @@ def loadBoardFromCsv(game):
 	return
 
 
-filewriter = None
+file_writer = None
 #maximálně 10 csv souborů, každý dostane index
 for i in range (0,10):
 	fileName = f"dama{i}.csv"
 	if exists(fileName): #když existuje soubor se stejným jménem, přejde na další index
 		continue
 	else:
-		filewriter = open(fileName, "w") #připraví se nový soubor pro zápis
+		file_writer = open(fileName, "w") #připraví se nový soubor pro zápis
 		break
 
 
-if filewriter is None: filewriter = open("dama.csv", "w") #jedenáctý soubor nedostane index a je po každém uložení přepsán
+if file_writer is None: file_writer = open("dama.csv", "w") #jedenáctý soubor nedostane index a je po každém uložení přepsán
 
 root = tkinter.Tk() #inicializece tkinter a vytvoření okna root
 root.title('Dáma™') #pojmenování okna
 
-game = Game(root, fileWriter = filewriter) #spustí hru znova, přiřadí filewriter se zápisem
+game = Game(root, file_writer = file_writer) #spustí hru znova, přiřadí file_writer se zápisem
 
 # vytvoří tlačítko k načítání hry z csv
 # při stisku tlačítka spustí loadBoardFromCsv
