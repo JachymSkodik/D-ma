@@ -1,7 +1,7 @@
 from board import Board
 from enums import Color
 from fig import Fig
-
+#opravit mezery/tabulátory
 class GameLoader: #funkce pro načtení hry z csv souboru
 	@staticmethod #funkce není vázaná objektem
 	def parseInputLine(fileReader):
@@ -37,7 +37,7 @@ class GameLoader: #funkce pro načtení hry z csv souboru
 		# pokud jsou v zápisu dvě figurky na stejném políčku, hra se nenačte, vyvolá se výjimka
 		while parsedLine:
 			fromPos, toPos, colorEnum = parsedLine
-			if not board.isMoveFigureOnBoardSuccess(fromPos[0], fromPos[1], Fig(toPos[0], toPos[1], colorEnum)):
+			if not board.is_move_figure_on_board_success(fromPos[0], fromPos[1], Fig(toPos[0], toPos[1], colorEnum)):
 				raise Exception("Can't load corrupted game")
 			# když je zápis správně, vrátí souřadnice, barvy figurek a posledního hráče na tahu
 			parsedLine = GameLoader.parseInputLine(fileReader)

@@ -21,7 +21,7 @@ class MovePlanner:
         newFig.positionY = toY
 
         #jestliže byl tah úspěšný, zapíše se barva a nová pozice figurky do zapisovače fileWriter
-        if(board.isMoveFigureOnBoardSuccess(self.figure.positionX, self.figure.positionY, newFig)):
+        if(board.is_move_figure_on_board_success(self.figure.positionX, self.figure.positionY, newFig)):
             fileWriter.write(f"{self.figure.toString()},{newFig.toString()},{ 'Black' if self.figure.color == Color.BLACK else 'White'}\n")
             self.figure = None #zruší označení políčka potom, co tah proběhl a byl zapsán do csv
             return True #tah byl úspěšný (v dalším kódu bude použito ke změně hráče, který je na tahu)
@@ -32,7 +32,7 @@ class MovePlanner:
         if(self.figure == None):
             return #když je políčko prázdné, nic nevrátí
 
-        moveInfos = board.getPossibleFigureMoves(self.figure) #funkce z boardu, která načte možné tahy pro figurku do proměnné
+        moveInfos = board.get_possible_figure_moves(self.figure) #funkce z boardu, která načte možné tahy pro figurku do proměnné
 
         #každé políčko v možných tazích je zvýrazněno
         for moveInfo in moveInfos:

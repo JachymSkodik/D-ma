@@ -19,7 +19,7 @@ class BoardSquare:
         
     def draw(self, rectangleWidth, rectangleHeight, canvas):
     
-        rectangleFill = 'lightgrey' #střídání barev
+        rectangleFill = 'lightgrey'  #střídání barev
         if(self.color == Color.BLACK):
             rectangleFill = 'brown'
     

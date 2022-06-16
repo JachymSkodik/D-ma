@@ -43,7 +43,7 @@ class Game:
 
     def handleClick(self, ev):
         # pokud hráč vyhrál, není třeba nic dál dělat
-        if self.board.hasAnyPlayerWon(): return
+        if self.board.has_any_player_won(): return
 
         mouseX = ev.x
         mouseY = ev.y
@@ -55,7 +55,7 @@ class Game:
         mouseWidth = math.floor(mouseX / (self.width / 8))
         mouseHeight = math.floor(mouseY / (self.height / 8))
 
-        fig = self.board.getFigureFromBoard(mouseWidth, mouseHeight)
+        fig = self.board.get_figure_from_board(mouseWidth, mouseHeight)
 
         # posuneme figurku kde není figurka
         if (fig == None):
@@ -88,12 +88,12 @@ class Game:
         self.root.bind('<Button-1>', self.handleClick)  # <Button-1> je levé tlačítko myši
 
     def checkWinner(self):
-        countWhite, countBlack = self.board.countColors() #bere hodnoty z hasAnyPlayerWon z boardu
+        count_white, count_black = self.board.count_colors() #bere hodnoty z has_any_player_won z boardu
 
-        if countBlack == 0:
+        if count_black == 0:
             return "White won!"
 
-        if countWhite == 0:
+        if count_white == 0:
             return "Black won!"
 
         return ""
