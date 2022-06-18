@@ -72,7 +72,7 @@ class Board:
             if (adjacent_fig.color == fig.color):
                 continue
 
-            # vrátí souřadnice figurky, kterou můžeme přeskočit
+            # vrátí souřadnice figurky, která skákala
             skipping_fig_pos_x = -1
             skipping_fig_pos_y = SkippingFig.from_fig(fig).move_based_on_color()
 
