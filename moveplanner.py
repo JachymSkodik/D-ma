@@ -16,7 +16,7 @@ class MovePlanner:
         if (self.figure == None): #kontrola, jestli je figurka označena
             return False
 
-        new_fig = self.figure.copy_fig() 
+        new_fig = self.figure.copy_fig()
         new_fig.position_x = to_x
         new_fig.position_y = to_y
 
@@ -50,15 +50,15 @@ class MovePlanner:
             rectangle_width*self.figure.position_x,
             rectangle_height*self.figure.position_y,
             rectangle_width*(self.figure.position_x+1),
-            rectangle_height*(self.figure.position_y+1), 
+            rectangle_height*(self.figure.position_y+1),
             fill='blue',
             stipple= 'gray12')
 
 #výsledky tahu (buď je  figurka stále ve hře, nebo je přeskočená)
 class MoveInfo:
     def __init__(self, played_figure):
-        self.played_figure = played_figure 
-        self.skipped_figure = None 
+        self.played_figure = played_figure
+        self.skipped_figure = None
 
     def set_skipped_figure(self, skipped_figure):
         self.skipped_figure = skipped_figure

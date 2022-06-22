@@ -1,6 +1,6 @@
 from boardsquare import BoardSquare
 from enums import Color
-from fig import Fig, Queen, SkippingFig
+from fig import Fig, BaseFigure, Queen, SkippingFig, SkippingQueen
 from moveplanner import MoveInfo
 
 
@@ -31,12 +31,12 @@ class Board:
         # míň přehledná verze, ale kód je kratší
         for i in range(0, 7, 2):
             for j in range(0, 3, 2):
-                self.save_fig_to_board(Fig(i, j, Color.WHITE))
-            self.save_fig_to_board(Fig(i, 6, Color.BLACK))
+                self.save_fig_to_board(BaseFigure(i, j, Color.WHITE))
+            self.save_fig_to_board(BaseFigure(i, 6, Color.BLACK))
         for i in range(1, 8, 2):
             for j in range(5, 8, 2):
-                self.save_fig_to_board(Fig(i, j, Color.BLACK))
-            self.save_fig_to_board(Fig(i, 1, Color.WHITE))
+                self.save_fig_to_board(BaseFigure(i, j, Color.BLACK))
+            self.save_fig_to_board(BaseFigure(i, 1, Color.WHITE))
 
     # uloží figurku na políčko
     def save_fig_to_board(self, fig):
@@ -57,40 +57,76 @@ class Board:
         figure_move_set = fig.possible_moves()
         moveset_accumulator = []
 
-        # Byla tu primární snaha, neporovnávat všechno v závislosti na barvě
-        for [pos_x, pos_y] in figure_move_set:
-            # pokud políčko nemá figurku, tak daná figurka se může na to pole pohnout
-            if (not self.has_square_figure(pos_x, pos_y)):
-                move_info = MoveInfo(Fig(pos_x, pos_y, fig.color))
+        if (Fig.am_i_queen(fig) == False):
+            # Byla tu primární snaha, neporovnávat všechno v závislosti na barvě
+            for [pos_x, pos_y] in figure_move_set:
+                # pokud políčko nemá figurku, tak daná figurka se může na to pole pohnout
+                if (not self.has_square_figure(pos_x, pos_y)):
+                    move_info = MoveInfo(Fig(pos_x, pos_y, fig.color))
+                    moveset_accumulator.append(move_info)
+                    continue
+
+                # Zde nemusíme kontrolovat None, protože s jistotou můžeme říci,
+                # že na dané pozici se již nachází figurka (to nám zajišťuje předchozí podmínka)
+                # Pokud se na pozici nachází figurka stejné barvy, tak ji nemůžeme přeskočit
+                adjacent_fig = self.get_figure_from_board(pos_x, pos_y)
+                if (adjacent_fig.color == fig.color):
+                    continue
+
+                # vrátí souřadnice figurky, kterou můžeme přeskočit
+                # skipping_fig_pos_x = -1
+                skipping_fig_pos_y = SkippingFig.from_fig(fig).move_based_on_color()
+
+                if (fig.position_x > adjacent_fig.position_x):
+                    # skáčeme doleva
+                    skipping_fig_pos_x = fig.position_x - 2
+                else:
+                    # skáčeme doprava
+                    skipping_fig_pos_x = fig.position_x + 2
+
+                # kontrola, jestli máme před sebou figurku na přeskočení
+                if (self.has_square_figure(skipping_fig_pos_x, skipping_fig_pos_y)):
+                    continue
+
+                move_info = MoveInfo(SkippingFig(skipping_fig_pos_x, skipping_fig_pos_y,
+                                                 fig.color))  # zaznamená souřadnice figurky, která skákala
+                move_info.set_skipped_figure(adjacent_fig)  # nastaví figurku jako přeskočenou
+                moveset_accumulator.append(move_info)  # přidává možné tahy do seznamu
+
+        if (Fig.am_i_queen(fig) == True):
+            for [pos_x, pos_y] in figure_move_set:
+                if (not self.has_square_figure(pos_x, pos_y)):
+                    move_info = MoveInfo(Queen(pos_x, pos_y, fig.color))
+                    moveset_accumulator.append(move_info)
+                    continue
+
+                adjacent_fig = self.get_figure_from_board(pos_x, pos_y)
+                if (adjacent_fig.color == fig.color):
+                    continue
+
+                if (adjacent_fig != None):
+                    skipping_fig_pos_y = SkippingQueen.give_y(fig)
+                    skipping_fig_pos_x = SkippingQueen.give_x(fig)
+                    if (fig.position_x > adjacent_fig.position_x and fig.position_y > adjacent_fig.position_y):
+                        skipping_fig_pos_x = fig.position_x - 2
+                        skipping_fig_pos_y = fig.position_y - 2
+                    if (fig.position_x < adjacent_fig.position_x and fig.position_y < adjacent_fig.position_y):
+                        skipping_fig_pos_x = fig.position_x + 2
+                        skipping_fig_pos_y = fig.position_y + 2
+                    if (fig.position_x > adjacent_fig.position_x and fig.position_y < adjacent_fig.position_y):
+                        skipping_fig_pos_x = fig.position_x - 2
+                        skipping_fig_pos_y = fig.position_y + 2
+                    if (fig.position_x < adjacent_fig.position_x and fig.position_y > adjacent_fig.position_y):
+                        skipping_fig_pos_x = skipping_fig_pos_x + 2
+                        skipping_fig_pos_y = skipping_fig_pos_y - 2
+
+                if (self.has_square_figure(skipping_fig_pos_x, skipping_fig_pos_y)):
+                    continue
+
+                move_info = MoveInfo(SkippingFig(skipping_fig_pos_x, skipping_fig_pos_y,
+                                                 fig.color))
+                move_info.set_skipped_figure(adjacent_fig)
                 moveset_accumulator.append(move_info)
-                continue
-
-            # Zde nemusíme kontrolovat None, protože s jistotou můžeme říci,
-            # že na danné pozici se již nachází figurka (to nám zajišťuje předchozí podmínka)
-            # Pokud se na pozici nachází figurka stejné barvy, tak ji nemůžeme přeskočit
-            adjacent_fig = self.get_figure_from_board(pos_x, pos_y)
-            if (adjacent_fig.color == fig.color):
-                continue
-
-            # vrátí souřadnice figurky, která skákala
-            skipping_fig_pos_x = -1
-            skipping_fig_pos_y = SkippingFig.from_fig(fig).move_based_on_color()
-
-            if (fig.position_x > adjacent_fig.position_x):
-                # skáčeme doleva
-                skipping_fig_pos_x = fig.position_x - 2
-            else:
-                # skáčeme doprava
-                skipping_fig_pos_x = fig.position_x + 2
-
-            # kontrola, jestli máme před sebou figurku na přeskočení
-            if (self.has_square_figure(skipping_fig_pos_x, skipping_fig_pos_y)):
-                continue
-
-            move_info = MoveInfo(SkippingFig(skipping_fig_pos_x, skipping_fig_pos_y,
-                                             fig.color))  # zaznamená souřadnice figurky, která skákala
-            move_info.set_skipped_figure(adjacent_fig)  # nastaví figurku jako přeskočenou
-            moveset_accumulator.append(move_info)  # přidává možné tahy do seznamu
 
         return moveset_accumulator
 

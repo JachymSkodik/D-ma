@@ -12,7 +12,7 @@ class BoardSquare:
         return self.fig != None
     
     def save_fig(self, new_fig):
-        if(self.has_fig() and new_fig != None):  
+        if(self.has_fig() and new_fig != None):
             raise Exception("Can't save figure to square which contains figure: ", self.fig, new_fig)
         else:
             self.fig = new_fig #když je políčko prázdné, figurka se uloží
