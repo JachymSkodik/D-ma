@@ -84,7 +84,7 @@ class Board:
                     # skáčeme doprava
                     skipping_fig_pos_x = fig.position_x + 2
 
-                # kontrola, jestli máme před sebou figurku na přeskočení
+                # kontrola, jestli je políčko za figurkou, kterou chceme přeskočit, volné
                 if (self.has_square_figure(skipping_fig_pos_x, skipping_fig_pos_y)):
                     continue
 
